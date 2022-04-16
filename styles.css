@@ -120,7 +120,7 @@ button:disabled {
 
 @media (min-width: 700px){
 	
-    button:hover {
+    button:hover:enabled {
         background-color: var(--color-3);
     }
 }

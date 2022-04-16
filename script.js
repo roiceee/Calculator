@@ -63,6 +63,11 @@ function deleteInput() {
     const text = document.querySelector(".input");
     const newInput = arr1.join("");
     text.textContent = newInput;
+
+    if (!(arr1.includes("."))) {
+        const button = document.querySelector("#decimal-button");
+        button.disabled = false;
+    }
     if (counter < 0) {counter = 0;}
     console.log(counter);
 }
@@ -72,7 +77,8 @@ const operationButtons = document.querySelectorAll(".smaller-button.operation-bu
 const deleteButton = document.querySelector("#delete-button");
 
 let arr1 = [];
-let counter = 1;
+let arr2 = [];
+let counter = 0;
 let disable = false;
 numberButtonListener(buttons);
 operationButtonListener(operationButtons);
