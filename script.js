@@ -13,13 +13,13 @@ function operationButtonListener(operationButtons) {
             counter = 0;
             operator = getDataAttribute(button);
             number = joinNumArray(); //convert array to number
-            process(number, operator, "operation");
+            process(number, operator);
             arr = [];
         })
     })
 }
 
-function process(number,operator, keyword) {
+function process(number,operator) {
     if (first) {
         display(number, operator);
         number2 = number;
@@ -32,20 +32,22 @@ function process(number,operator, keyword) {
     } else if (!first) {
         number1 = number;
         result = operate(number1, number2, previousOperator);
-        display(result, operator, keyword);
+        display(result, operator);
         number2 = result;
-        if (keyword == "equals") {
-            operator = "";
-        }
         previousOperator = operator;
     }
 }
 
 function display(number, operator, keyword) {
+    const text1 = document.querySelector(".input");
     const text = document.querySelector(".partial-result");
     text.style.display = "block";
+    if (isNaN(number)) {
+        text.style.display = "none";
+        text1.textContent = "Syntax Error";
+        return;
+    }
     if (keyword == "equals") {
-        const text1 = document.querySelector(".input");
         number = number.toString();
         text1.textContent = `${number}`
         text.style.display = "none";
@@ -59,6 +61,10 @@ function display(number, operator, keyword) {
 function joinNumArray() {
     return parseFloat(arr.join(""));
 }
+
+function isNaN(x) {
+    return x !== x;
+ };
 
 //get the data key
 function getDataAttribute(button) {
@@ -164,13 +170,23 @@ function modulo(num1, num2) {
     return num2 % num1;
 }
 
+function resetVariables() {
+    arr = [];
+    result = 0;
+    number = 0;
+    number1 = 0;
+    number2 = 0;
+    previousOperator = "";
+    operator = "";
+    first = true;
+    disable = false;
+}
 const buttons = document.querySelectorAll(".number-button");
 const operationButtons = document.querySelectorAll(".smaller-button.operation-button")
 const deleteButton = document.querySelector("#delete-button");
 const decButton = document.querySelector("#decimal-button");
 const solveButton = document.querySelector(".biggest-button");
 let arr = [];
-let arr2 = [];
 let counter = 0;
 let disable = false;
 let result, number, number1, number2;
@@ -182,9 +198,12 @@ operationButtonListener(operationButtons);
 deleteButton.addEventListener('click', () => deleteInput());
 solveButton.addEventListener('click', () => {
     if (!first) { 
-        process(number, operator, "equals");
+        number = joinNumArray();
+        number1 = number;
+        result = operate(number1, number2, previousOperator);
+        display(result, operator, "equals");
+        resetVariables();
     }
-    arr = [];
 })
     
 
