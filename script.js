@@ -10,16 +10,48 @@ function numberButtonListener(buttons) {
 function operationButtonListener(operationButtons) {
     operationButtons.forEach((button) => {
         button.addEventListener('click', (e) => {
-            const operator = getDataAttribute(button);
-            const number = joinNumArray();
+            counter = 0;
+            operator = getDataAttribute(button);
+            number = joinNumArray(); //convert array to number
+            process(number, operator, "operation");
             arr = [];
-            displayPartial(number, operator);
         })
     })
 }
 
-function displayPartial(number, operator) {
+function process(number,operator, keyword) {
+    if (first) {
+        display(number, operator);
+        number2 = number;
+        previousOperator = operator;
+        first = false;
+    } else if (!number) {
+        const tempNum = number2;
+        display(tempNum, operator);
+        previousOperator = operator;
+    } else if (!first) {
+        number1 = number;
+        result = operate(number1, number2, previousOperator);
+        display(result, operator, keyword);
+        number2 = result;
+        if (keyword == "equals") {
+            operator = "";
+        }
+        previousOperator = operator;
+    }
+}
+
+function display(number, operator, keyword) {
     const text = document.querySelector(".partial-result");
+    text.style.display = "block";
+    if (keyword == "equals") {
+        const text1 = document.querySelector(".input");
+        number = number.toString();
+        text1.textContent = `${number}`
+        text.style.display = "none";
+        return;
+    }
+    
     number = number.toString();
     text.textContent = `${number} ${operator}`;
 }
@@ -60,7 +92,7 @@ function preventDigitOverflow() {
 }
 
 //disable button when reach certain digit
-function disableButtons(disable,buttons,operationButtons) {
+function disableButtons(disable,buttons) {
     if (disable) {
         buttons.forEach((button) => button.disabled = true);
         } 
@@ -97,53 +129,66 @@ function checkDecimalButton() {
 
 function operate(num1, num2, operator) {
     switch (operator) {
-        case "+": add(num1, num2);
+        case "+": result = add(num1, num2);
         break;
-        case "-": subtract(num1, num2);
+        case "-": result =  subtract(num1, num2);
         break;
-        case "*": multiply(num1, num2);
+        case "x": result =  multiply(num1, num2);
         break;
-        case "/": divide(num1, num2);
+        case "/": result =  divide(num1, num2);
         break;
-        case "%": modulo(num1, num2);
+        case "%": result =  modulo(num1, num2);
         break;
     }
+    return result;
 }
 
 function add(num1, num2) {
-    return num1 + num2;
+    return num2 + num1;
 }
 
 function subtract(num1, num2) {
-    return num1 - num2;
+    return num2 - num1;
 }
 
 function multiply(num1, num2) {
-    return num1 * num2;
+     return num1 * num2;
+    
 }
 
 function divide(num1, num2) {
-    return num1 / num2;
+    return num2 / num1;
 }
 
 function modulo(num1, num2) {
-    return num1 % num2;
+    return num2 % num1;
 }
 
 const buttons = document.querySelectorAll(".number-button");
 const operationButtons = document.querySelectorAll(".smaller-button.operation-button")
 const deleteButton = document.querySelector("#delete-button");
 const decButton = document.querySelector("#decimal-button");
+const solveButton = document.querySelector(".biggest-button");
 let arr = [];
+let arr2 = [];
 let counter = 0;
 let disable = false;
+let result, number, number1, number2;
+let previousOperator, operator;
+let first = true;
 const maxDigits = 10;
 numberButtonListener(buttons);
 operationButtonListener(operationButtons);
 deleteButton.addEventListener('click', () => deleteInput());
+solveButton.addEventListener('click', () => {
+    if (!first) { 
+        process(number, operator, "equals");
+    }
+    arr = [];
+})
+    
 
 
-//enter numbers
-//store the number in an array (not including operator).
-//when user presses operator, the array of numbers will be joined and shown to the screen
-//when the user presses another operator (while another operator is present), it changes the operator
+
+//join the array to become a number
+//when the operator is pressed, the calculator displays the partial result 
