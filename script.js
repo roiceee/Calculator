@@ -16,10 +16,11 @@ function operationButtonListener(operationButtons) {
 }
 
 function getDataAttribute(button) {
-    if (counter > 20) {
+    counter++;
+    console.log(counter);
+    if (counter >= 20) {
         disable = true;
     }
-    counter++;
     const key = button.getAttribute("data-key");
     if (key == ".") {
         button.disabled = true;
@@ -47,13 +48,32 @@ function disableButtons(disable,buttons,operationButtons) {
         } 
     }
 
+function restoreButtons() {
+    buttons.forEach((button) => button.disabled = false);
+    operationButtons.forEach((button) => button.disabled = false);
+    disable = false;
+}
+
+function deleteInput() {
+    counter--;
+    if (counter >= 20) {
+        restoreButtons();
+    }
+    arr1.pop();
+    const text = document.querySelector(".input");
+    const newInput = arr1.join("");
+    text.textContent = newInput;
+    if (counter < 0) {counter = 0;}
+    console.log(counter);
+}
 
 const buttons = document.querySelectorAll(".number-button");
 const operationButtons = document.querySelectorAll(".smaller-button.operation-button")
+const deleteButton = document.querySelector("#delete-button");
+
 let arr1 = [];
-let arr2 = [];
-let arr3 = [];
-let counter = 0;
+let counter = 1;
 let disable = false;
 numberButtonListener(buttons);
 operationButtonListener(operationButtons);
+deleteButton.addEventListener('click', () => deleteInput());
