@@ -10,10 +10,22 @@ function numberButtonListener(buttons) {
 function operationButtonListener(operationButtons) {
     operationButtons.forEach((button) => {
         button.addEventListener('click', (e) => {
-            const operatorValue = getDataAttribute(button);
-            joinNumArray();
+            const operator = getDataAttribute(button);
+            const number = joinNumArray();
+            arr = [];
+            displayPartial(number, operator);
         })
     })
+}
+
+function displayPartial(number, operator) {
+    const text = document.querySelector(".partial-result");
+    number = number.toString();
+    text.textContent = `${number} ${operator}`;
+}
+
+function joinNumArray() {
+    return parseFloat(arr.join(""));
 }
 
 //get the data key
@@ -21,10 +33,10 @@ function getDataAttribute(button) {
     return button.getAttribute("data-key"); 
 }
 
+//this will append the digits to the array
 function appendArray(key) {
-    //this will append the digits to the array
     preventDigitOverflow();
-    arr1.push(key);
+    arr.push(key);
     checkDecimalButton();
     displayInput();
 }
@@ -33,7 +45,7 @@ function appendArray(key) {
 //this is for displaying the num input
 function displayInput() {
    const text = document.querySelector(".input");
-   const input = arr1.join("");
+   const input = arr.join("");
    text.textContent = input;
 }
 
@@ -54,6 +66,19 @@ function disableButtons(disable,buttons,operationButtons) {
         } 
     }
 
+function deleteInput() {
+    counter--;
+    if (counter >= maxDigits) {
+        restoreButtons();
+    }
+    arr.pop();
+    displayInput();
+    checkDecimalButton();
+    if (counter < 0) {counter = 0;}
+    console.log(counter);
+}
+
+//used by deleleInput() function
 function restoreButtons() {
     buttons.forEach((button) => button.disabled = false);
     disable = false;
@@ -62,23 +87,12 @@ function restoreButtons() {
 
 //disables the decimal button when it is pressed
 function checkDecimalButton() {
-    if (arr1.includes(".")) {
+    if (arr.includes(".")) {
         decButton.disabled = true;
     } 
-    if (!(arr1.includes("."))) {
+    if (!(arr.includes("."))) {
         decButton.disabled = false;
     }
-}
-function deleteInput() {
-    counter--;
-    if (counter >= maxDigits) {
-        restoreButtons();
-    }
-    arr1.pop();
-    displayInput();
-    checkDecimalButton();
-    if (counter < 0) {counter = 0;}
-    console.log(counter);
 }
 
 function operate(num1, num2, operator) {
@@ -120,7 +134,7 @@ const buttons = document.querySelectorAll(".number-button");
 const operationButtons = document.querySelectorAll(".smaller-button.operation-button")
 const deleteButton = document.querySelector("#delete-button");
 const decButton = document.querySelector("#decimal-button");
-let arr1 = [];
+let arr = [];
 let counter = 0;
 let disable = false;
 const maxDigits = 10;

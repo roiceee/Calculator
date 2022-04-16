@@ -42,15 +42,19 @@ h1 {
     grid-template-rows: 1fr 1fr;
 }
 
-.screen-top {
+.screen > div {
     display:flex;
     justify-content: flex-end;
     align-items: flex-end;
-    flex-flow: wrap;
 }
 
-.screen-top > p {
+.input {
     color: white;
+    font-size: 2rem;
+}
+
+.partial-result {
+    color: rgb(165, 165, 165);
     font-size: 1.4rem;
 }
 
