@@ -39,23 +39,25 @@ function process(number,operator) {
 }
 
 function display(number, operator, keyword) {
-    const text1 = document.querySelector(".input");
-    const text = document.querySelector(".partial-result");
     text.style.display = "block";
     if (isNaN(number)) {
-        text.style.display = "none";
+        text.style.display = "";
         text1.textContent = "Syntax Error";
         return;
     }
     if (keyword == "equals") {
         number = number.toString();
         text1.textContent = `${number}`
-        text.style.display = "none";
+        text.textContent = "";
         return;
     }
-    
     number = number.toString();
     text.textContent = `${number} ${operator}`;
+}
+
+function clearScreen() {
+    text1.textContent = "";
+    text.textContent = "";
 }
 
 function joinNumArray() {
@@ -82,9 +84,8 @@ function appendArray(key) {
 
 //this is for displaying the num input
 function displayInput() {
-   const text = document.querySelector(".input");
    const input = arr.join("");
-   text.textContent = input;
+   text1.textContent = input;
 }
 
 
@@ -172,20 +173,24 @@ function modulo(num1, num2) {
 
 function resetVariables() {
     arr = [];
-    result = 0;
-    number = 0;
-    number1 = 0;
-    number2 = 0;
-    previousOperator = "";
-    operator = "";
+    result = undefined;
+    number = undefined;
+    number1 = undefined;
+    number2 = undefined;
+    previousOperator = undefined;
+    operator = undefined;
     first = true;
     disable = false;
+    counter = 0;
 }
 const buttons = document.querySelectorAll(".number-button");
 const operationButtons = document.querySelectorAll(".smaller-button.operation-button")
 const deleteButton = document.querySelector("#delete-button");
 const decButton = document.querySelector("#decimal-button");
 const solveButton = document.querySelector(".biggest-button");
+const clearButton = document.querySelector("#clear-button");
+const text1 = document.querySelector(".input");
+const text = document.querySelector(".partial-result");
 let arr = [];
 let counter = 0;
 let disable = false;
@@ -205,6 +210,7 @@ solveButton.addEventListener('click', () => {
         resetVariables();
     }
 })
+clearButton.addEventListener('click', () => {clearScreen(); resetVariables();  restoreButtons();})
     
 
 
