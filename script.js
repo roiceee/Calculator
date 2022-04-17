@@ -17,8 +17,9 @@ function operationButtonListener(operationButtons) {
     operationButtons.forEach((button) => {
         button.addEventListener('click', (e) => {
             counter = 0;
+            checkCounter();
             disableEqualsButton();
-            operator = getDataAttribute(button);
+            operator = getDataAttribute(button.getAttribute("data-key"));
             number = joinNumArray(); 
             process(number, operator);
             if (!stopOperations) {
@@ -29,7 +30,11 @@ function operationButtonListener(operationButtons) {
         })
     })
 }
-
+function checkCounter() {
+    if (counter < maxDigits) {
+        restoreButtons();
+    }
+}
 function buttonFunctions(e, dataKey) {
     console.log(e.keyCode);
     if (!(e.target.id == decId) && !(e.target.id == negId)) {
@@ -40,9 +45,11 @@ function buttonFunctions(e, dataKey) {
             enableOperatorButtons();
         }
     }
-    disableButtons(disable,buttons);
+    count();
+    preventDigitOverflow(disable, buttons, dataKey);
     const key = getDataAttribute(dataKey);
     appendArray(key);
+   
 }
 
 function getDataAttribute(dataKey) {
@@ -114,7 +121,6 @@ function isNaN(x) {
  }
 
 function appendArray(key) {
-    preventDigitOverflow();
     if (key == "-") {
        negativeOrPositive(key);
     } else {
@@ -148,14 +154,16 @@ function displayInput() {
 }
 
 
-function preventDigitOverflow() {
+function count() {
     counter++;
+    console.log(counter);
     if (counter >= maxDigits) {
         disable = true;
     }
+
 }
 
-function disableButtons(disable,buttons) {
+function preventDigitOverflow(disable,buttons) {
     if (disable) {
         buttons.forEach((button) => button.disabled = true);
         keyboardDisabled = true;
@@ -212,9 +220,7 @@ function clearScreen() {
 
 function deleteInput() {
     counter--;
-    if (counter >= maxDigits) {
-        restoreButtons();
-    }
+    checkCounter();
     arr.pop();
     displayInput();
     checkDecimalButton();
@@ -308,6 +314,7 @@ solveButton.addEventListener('click', () => {
         result = operate(number1, number2, previousOperator);
         arr = [];
         checkDecimalButton();
+        restoreButtons();
         checkForNan(result);
         checkForInfinity(result);
         if (!stopOperations) {
