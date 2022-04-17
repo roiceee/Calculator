@@ -81,6 +81,7 @@ function isNaN(x) {
         disableAllButtons();
         text.textContent = ""
         text1.textContent = "Syntax Error"
+        decButton.disabled = true;
         stopOperations = true;
     }
  }
@@ -90,6 +91,7 @@ function isNaN(x) {
         disableAllButtons();
         text.textContent = ""
         text1.textContent = "Undefined"
+        decButton.disabled = true;
         stopOperations = true;
     }
  }
@@ -294,10 +296,10 @@ solveButton.addEventListener('click', () => {
         number = joinNumArray();
         number1 = number;
         result = operate(number1, number2, previousOperator);
+        checkDecimalButton();
         checkForNan(result);
         checkForInfinity(result);
         arr = [];
-        checkDecimalButton();
         if (!stopOperations) {
             display(result, operator, "equals");
             resetVariables();
