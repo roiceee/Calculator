@@ -287,10 +287,10 @@ solveButton.addEventListener('click', () => {
         number = joinNumArray();
         number1 = number;
         result = operate(number1, number2, previousOperator);
+        arr = [];
         checkDecimalButton();
         checkForNan(result);
         checkForInfinity(result);
-        arr = [];
         if (!stopOperations) {
             display(result, operator, "equals");
             resetVariables();
