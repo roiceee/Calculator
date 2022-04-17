@@ -23,7 +23,14 @@ function operationButtonListener(operationButtons) {
             process(number, operator);
             arr = [];
             checkDecimalButton();
-            displayInput();
+            if (result !== Infinity) {
+                displayInput();
+            } else if (result == Infinity) {
+                disableAllButtons();
+            } else if (isNaN(result)) {
+                disableAllButtons();
+            }
+            
         })
     })
 }
@@ -41,6 +48,10 @@ function process(number,operator) {
     } else if (!first) {
         number1 = number;
         result = operate(number1, number2, previousOperator);
+        if (result === Infinity) {
+          display(null,null,"Infinity");
+          return;
+        }
         display(result, operator);
         number2 = result;
         previousOperator = operator;
@@ -49,8 +60,13 @@ function process(number,operator) {
 
 function display(number, operator, keyword) {
     text.style.display = "block";
+    if (keyword == "Infinity") {
+        text.textContent = "";
+        text1.textContent = "Infinity Bruh";
+       return;
+     }
     if (isNaN(number)) {
-        text.style.display = "";
+        text.textContent = "";
         text1.textContent = "Syntax Error";
         return;
     }
@@ -69,6 +85,7 @@ function joinNumArray() {
 function isNaN(x) {
     return x !== x;
  };
+
 
 //get the data key
 function getDataAttribute(button) {
@@ -131,6 +148,8 @@ function disableButtons(disable,buttons) {
     }
 
 function restoreButtons() {
+    deleteButton.disabled = false;
+    enableEqualsButton();
     buttons.forEach((button) => button.disabled = false);
     disable = false;
     checkDecimalButton();
@@ -158,6 +177,16 @@ function disableEqualsButton() {
 function enableEqualsButton() {
     solveButton.disabled = false;
     isEqualsDisabled = false;
+}
+
+function disableAllButtons() {
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach((button) => {
+        button.disabled = true;
+        if (button.id == "clear-button") {
+            button.disabled = false;
+        }
+    })
 }
 
 function clearScreen() {
@@ -255,7 +284,13 @@ solveButton.addEventListener('click', () => {
         number = joinNumArray();
         number1 = number;
         result = operate(number1, number2, previousOperator);
-        display(result, operator, "equals");
+        if (result === Infinity) {
+            display(null,null,"Infinity");
+            disableAllButtons();
+            return;
+          } else {
+            display(result, operator, "equals");
+          }
         resetVariables();
     }
 })
