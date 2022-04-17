@@ -1,20 +1,18 @@
 function numberButtonListener(buttons) {
     buttons.forEach((button) => {
-        button.addEventListener('click', (e) => {
-            if (!(e.target.id == decId) && !(e.target.id == negId)) {
-                if (isEqualsDisabled) {
-                    enableEqualsButton();
-                }
-                if (isOperatorDisabled) {
-                    enableOperatorButtons();
-                }
-            }
-            disableButtons(disable,buttons);
-            const key = getDataAttribute(button);
-            appendArray(key);
-        })
+        button.addEventListener('click', (e) => buttonFunctions(e, button.getAttribute("data-key")));
     })
 }
+
+document.addEventListener('keydown', (e) => {
+    if (keyboardDisabled) {
+        return;
+    }
+    if (numMatcher.test(e.key)) {
+        buttonFunctions(e, e.key);
+}});
+    
+
 function operationButtonListener(operationButtons) {
     operationButtons.forEach((button) => {
         button.addEventListener('click', (e) => {
@@ -30,6 +28,25 @@ function operationButtonListener(operationButtons) {
             }      
         })
     })
+}
+
+function buttonFunctions(e, dataKey) {
+    console.log(e.keyCode);
+    if (!(e.target.id == decId) && !(e.target.id == negId)) {
+        if (isEqualsDisabled) {
+            enableEqualsButton();
+        }
+        if (isOperatorDisabled) {
+            enableOperatorButtons();
+        }
+    }
+    disableButtons(disable,buttons);
+    const key = getDataAttribute(dataKey);
+    appendArray(key);
+}
+
+function getDataAttribute(dataKey) {
+    return dataKey;
 }
 
 function process(number,operator) {
@@ -96,10 +113,6 @@ function isNaN(x) {
     }
  }
 
-function getDataAttribute(button) {
-    return button.getAttribute("data-key"); 
-}
-
 function appendArray(key) {
     preventDigitOverflow();
     if (key == "-") {
@@ -145,11 +158,13 @@ function preventDigitOverflow() {
 function disableButtons(disable,buttons) {
     if (disable) {
         buttons.forEach((button) => button.disabled = true);
+        keyboardDisabled = true;
         } 
     }
 
 function restoreButtons() {
     deleteButton.disabled = false;
+    keyboardDisabled = false;
     enableEqualsButton();
     buttons.forEach((button) => button.disabled = false);
     disable = false;
@@ -268,6 +283,8 @@ const solveButton = document.querySelector(".biggest-button");
 const clearButton = document.querySelector("#clear-button");
 const text = document.querySelector(".partial-result");
 const text1 = document.querySelector(".input");
+const decId = decButton.getAttribute("id");
+const negId = negativeButton.getAttribute("id");
 let arr = [];
 let counter = 0;
 let disable = false;
@@ -277,7 +294,9 @@ let first = true;
 isOperatorDisabled = true;
 isEqualsDisabled = false;
 let stopOperations = false;
+let keyboardDisabled = false;
 const maxDigits = 10;
+const numMatcher = /[0123456789]/i;
 numberButtonListener(buttons);
 operationButtonListener(operationButtons);
 disableOperatorButtons();
@@ -298,5 +317,3 @@ solveButton.addEventListener('click', () => {
     }
 })
 clearButton.addEventListener('click', () => {clearScreen(); resetVariables();  restoreButtons();})
-const decId = decButton.getAttribute("id");
-const negId = negativeButton.getAttribute("id");
