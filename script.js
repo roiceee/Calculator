@@ -21,16 +21,11 @@ function operationButtonListener(operationButtons) {
             operator = getDataAttribute(button);
             number = joinNumArray(); //convert array to number
             process(number, operator);
-            arr = [];
-            checkDecimalButton();
-            if (result !== Infinity) {
+            if (!stopOperations) {
+                arr = [];
+                checkDecimalButton();
                 displayInput();
-            } else if (result == Infinity) {
-                disableAllButtons();
-            } else if (isNaN(result)) {
-                disableAllButtons();
-            }
-            
+            }      
         })
     })
 }
@@ -48,28 +43,18 @@ function process(number,operator) {
     } else if (!first) {
         number1 = number;
         result = operate(number1, number2, previousOperator);
-        if (result === Infinity) {
-          display(null,null,"Infinity");
-          return;
+        checkForNan(result);
+        checkForInfinity(result);
+        if (!stopOperations) {
+            display(result, operator);
+            number2 = result;
+            previousOperator = operator;
         }
-        display(result, operator);
-        number2 = result;
-        previousOperator = operator;
     }
 }
 
 function display(number, operator, keyword) {
     text.style.display = "block";
-    if (keyword == "Infinity") {
-        text.textContent = "";
-        text1.textContent = "Infinity Bruh";
-       return;
-     }
-    if (isNaN(number)) {
-        text.textContent = "";
-        text1.textContent = "Syntax Error";
-        return;
-    }
     if (keyword == "equals") {
         number = number.toString();
         text1.textContent = `${number}`
@@ -85,7 +70,27 @@ function joinNumArray() {
 function isNaN(x) {
     return x !== x;
  };
+ function isInfinity(x) {
+     return x === Infinity;
+ }
 
+ function checkForNan(result) {
+    if (isNaN(result)) {
+        disableAllButtons();
+        text.textContent = ""
+        text1.textContent = "Syntax Error!"
+        stopOperations = true;
+    }
+ }
+
+ function checkForInfinity(result) {
+    if (isInfinity(result)) {
+        disableAllButtons();
+        text.textContent = ""
+        text1.textContent = "Infinity Bruh"
+        stopOperations = true;
+    }
+ }
 
 //get the data key
 function getDataAttribute(button) {
@@ -256,6 +261,7 @@ function resetVariables() {
     isOperatorDisabled = true;
     isEqualsDisabled = false;
     counter = 0;
+    stopOperations = false;
     disableOperatorButtons();
 }
 const buttons = document.querySelectorAll(".number-button");
@@ -264,8 +270,8 @@ const deleteButton = document.querySelector("#delete-button");
 const decButton = document.querySelector("#decimal-button");
 const solveButton = document.querySelector(".biggest-button");
 const clearButton = document.querySelector("#clear-button");
-const text1 = document.querySelector(".input");
 const text = document.querySelector(".partial-result");
+const text1 = document.querySelector(".input");
 let arr = [];
 let counter = 0;
 let disable = false;
@@ -274,6 +280,7 @@ let previousOperator, operator;
 let first = true;
 isOperatorDisabled = true;
 isEqualsDisabled = false;
+let stopOperations = false;
 const maxDigits = 10;
 numberButtonListener(buttons);
 operationButtonListener(operationButtons);
@@ -284,14 +291,12 @@ solveButton.addEventListener('click', () => {
         number = joinNumArray();
         number1 = number;
         result = operate(number1, number2, previousOperator);
-        if (result === Infinity) {
-            display(null,null,"Infinity");
-            disableAllButtons();
-            return;
-          } else {
+        checkForNan(result);
+        checkForInfinity(result);
+        if (!stopOperations) {
             display(result, operator, "equals");
-          }
-        resetVariables();
+            resetVariables();
+        }
     }
 })
 clearButton.addEventListener('click', () => {clearScreen(); resetVariables();  restoreButtons();})
