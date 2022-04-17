@@ -21,7 +21,7 @@ function operationButtonListener(operationButtons) {
             counter = 0;
             disableEqualsButton();
             operator = getDataAttribute(button);
-            number = joinNumArray(); //convert array to number
+            number = joinNumArray(); 
             process(number, operator);
             if (!stopOperations) {
                 arr = [];
@@ -96,12 +96,10 @@ function isNaN(x) {
     }
  }
 
-//get the data key
 function getDataAttribute(button) {
     return button.getAttribute("data-key"); 
 }
 
-//this will append the digits to the array
 function appendArray(key) {
     preventDigitOverflow();
     if (key == "-") {
@@ -113,7 +111,6 @@ function appendArray(key) {
     displayInput();
 }
 
-//this will toggle negative or positive values 
 function negativeOrPositive(key) {
     if (arr.includes("-")) {
         arr.shift();
@@ -123,7 +120,6 @@ function negativeOrPositive(key) {
     }
 }
 
-//disables the decimal button when it is pressed
 function checkDecimalButton() {
     if (arr.includes(".")) {
         decButton.disabled = true;
@@ -133,23 +129,19 @@ function checkDecimalButton() {
     }
 }
 
-//this is for displaying the num input
 function displayInput() {
    const input = arr.join("");
    text1.textContent = input;
 }
 
 
-//max is 8 digits
 function preventDigitOverflow() {
     counter++;
-    console.log(counter);
     if (counter >= maxDigits) {
         disable = true;
     }
 }
 
-//disable button when reach certain digit
 function disableButtons(disable,buttons) {
     if (disable) {
         buttons.forEach((button) => button.disabled = true);
@@ -212,7 +204,6 @@ function deleteInput() {
     displayInput();
     checkDecimalButton();
     if (counter < 0) {counter = 0;}
-    console.log(counter);
 }
 
 function operate(num1, num2, operator) {
@@ -309,4 +300,3 @@ solveButton.addEventListener('click', () => {
 clearButton.addEventListener('click', () => {clearScreen(); resetVariables();  restoreButtons();})
 const decId = decButton.getAttribute("id");
 const negId = negativeButton.getAttribute("id");
-//fix multiply by 0 and divided by 0
