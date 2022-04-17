@@ -1,8 +1,13 @@
 function numberButtonListener(buttons) {
     buttons.forEach((button) => {
         button.addEventListener('click', (e) => {
-            solveButton.disabled = false;
+            if (isEqualsDisabled == true) {
+                enableEqualsButton();
+            }
             disableButtons(disable,buttons);
+            if (isOperatorDisabled == true) {
+                enableOperatorButtons();
+            }
             const key = getDataAttribute(button);
             appendArray(key);
         })
@@ -56,16 +61,9 @@ function display(number, operator, keyword) {
     number = number.toString();
     text.textContent = `${number} ${operator}`;
 }
-
-function clearScreen() {
-    text1.textContent = "";
-    text.textContent = "";
-}
-
 function joinNumArray() {
     return parseFloat(arr.join(""));
 }
-
 function isNaN(x) {
     return x !== x;
  };
@@ -78,11 +76,34 @@ function getDataAttribute(button) {
 //this will append the digits to the array
 function appendArray(key) {
     preventDigitOverflow();
-    arr.push(key);
+    if (key == "-") {
+       negativeOrPositive(key);
+    } else {
+        arr.push(key);
+    }
     checkDecimalButton();
     displayInput();
 }
 
+//this will toggle negative or positive values 
+function negativeOrPositive(key) {
+    if (arr.includes("-")) {
+        arr.shift();
+        counter-=2;
+    } else {
+        arr.unshift(key);
+    }
+}
+
+//disables the decimal button when it is pressed
+function checkDecimalButton() {
+    if (arr.includes(".")) {
+        decButton.disabled = true;
+    } 
+    if (!(arr.includes("."))) {
+        decButton.disabled = false;
+    }
+}
 
 //this is for displaying the num input
 function displayInput() {
@@ -107,12 +128,39 @@ function disableButtons(disable,buttons) {
         } 
     }
 
+function restoreButtons() {
+    buttons.forEach((button) => button.disabled = false);
+    disable = false;
+    checkDecimalButton();
+}
+
+function disableOperatorButtons() {
+    isOperatorDisabled = true;
+    operationButtons.forEach((button) => {
+        button.disabled = true;
+    })
+}
+
+function enableOperatorButtons() {
+    isOperatorDisabled = false;
+    operationButtons.forEach((button) => {
+        button.disabled = false;
+    })
+}
+
 function disableEqualsButton() {
-    solveButton.disabled = "true";
+    solveButton.disabled = true;
+    isEqualsDisabled = true;
 }
 
 function enableEqualsButton() {
-    solveButton.disabled = "false";
+    solveButton.disabled = false;
+    isEqualsDisabled = false;
+}
+
+function clearScreen() {
+    text1.textContent = "";
+    text.textContent = "";
 }
 
 function deleteInput() {
@@ -125,23 +173,6 @@ function deleteInput() {
     checkDecimalButton();
     if (counter < 0) {counter = 0;}
     console.log(counter);
-}
-
-//used by deleleInput() function
-function restoreButtons() {
-    buttons.forEach((button) => button.disabled = false);
-    disable = false;
-    checkDecimalButton();
-}
-
-//disables the decimal button when it is pressed
-function checkDecimalButton() {
-    if (arr.includes(".")) {
-        decButton.disabled = true;
-    } 
-    if (!(arr.includes("."))) {
-        decButton.disabled = false;
-    }
 }
 
 function operate(num1, num2, operator) {
@@ -191,7 +222,10 @@ function resetVariables() {
     operator = undefined;
     first = true;
     disable = false;
+    isOperatorDisabled = true;
+    isEqualsDisabled = false;
     counter = 0;
+    disableOperatorButtons();
 }
 const buttons = document.querySelectorAll(".number-button");
 const operationButtons = document.querySelectorAll(".smaller-button.operation-button")
@@ -207,9 +241,12 @@ let disable = false;
 let result, number, number1, number2;
 let previousOperator, operator;
 let first = true;
+isOperatorDisabled = true;
+isEqualsDisabled = false;
 const maxDigits = 10;
 numberButtonListener(buttons);
 operationButtonListener(operationButtons);
+disableOperatorButtons();
 deleteButton.addEventListener('click', () => deleteInput());
 solveButton.addEventListener('click', () => {
     if (!first) { 
@@ -223,7 +260,3 @@ solveButton.addEventListener('click', () => {
 clearButton.addEventListener('click', () => {clearScreen(); resetVariables();  restoreButtons();})
     
 
-
-
-//issues
-//
