@@ -10,6 +10,55 @@ function operationButtonListener(operationButtons) {
         })
     })
 }
+document.addEventListener('keydown', (e) => {
+    console.log(e.key);
+    if (functionKeysMatcher.test(e.key)) {
+        return;
+    }
+    if ("Escape" == e.key) {
+        clearScreen(); resetVariables();  restoreButtons();
+        return;
+    }
+    if (!isEqualsDisabled) {
+        if ("Enter" == e.key) {
+            solveButtonFunction();
+            return;
+        }
+        
+    }
+    if (!keyboardDisabled) {
+        if (numMatcher.test(e.key) || "." == e.key) {
+            if ("." == e.key) {
+                if (!decimalDisabled) {
+                    buttonFunctions(e, e.key);
+                    return;
+                } else {
+                    return;
+                }
+            }
+            buttonFunctions(e, e.key);
+            return;
+        }
+       
+    }
+    if (!isOperatorDisabled) {
+        if ("." == e.key || "," == e.key) {
+            return;
+        }
+        if (operationMatcher.test(e.key)) {
+            operationFunctions(e, e.key);
+            return;
+        }
+        
+    }
+    if (!deleteDisabled) {
+        if ("Backspace" == e.key) {
+            deleteInput();
+            return;
+        }
+        
+    }
+});
 function buttonFunctions(e, dataKey) {
     console.log(e.key);
     if (!(e.target.id == decId) && !(e.target.id == negId)) {
@@ -56,46 +105,6 @@ function solveButtonFunction() {
         }
     }
 }
-document.addEventListener('keydown', (e) => {
-    console.log(e.key);
-    if (functionKeysMatcher.test(e.key)) {
-        return;
-    }
-    if ("Escape" == e.key) {
-        clearScreen(); resetVariables();  restoreButtons();
-    }
-    if (!isEqualsDisabled) {
-        if ("Enter" == e.key) {
-            solveButtonFunction();
-        }
-    }
-    if (!keyboardDisabled) {
-        if (numMatcher.test(e.key)) {
-            buttonFunctions(e, e.key);
-        }
-    }
-    if (!isOperatorDisabled) {
-        if (operationMatcher.test(e.key)) {
-            operationFunctions(e, e.key);
-        }
-    }
-    if (!deleteDisabled) {
-        if ("Backspace" == e.key) {
-            deleteInput();
-        }
-    }
-});
-
-function checkCounter() {
-    if (counter < maxDigits) {
-        restoreButtons();
-    }
-}
-
-function getDataAttribute(dataKey) {
-    return dataKey;
-}
-
 function process(number,operator) {
     if (first) {
         display(number, operator);
@@ -118,7 +127,6 @@ function process(number,operator) {
         }
     }
 }
-
 function display(number, operator, keyword) {
     text.style.display = "block";
     if (keyword == "equals") {
@@ -130,22 +138,17 @@ function display(number, operator, keyword) {
     number = number.toString();
     text.textContent = `${number} ${operator}`;
 }
-function joinNumArray() {
-    return parseFloat(arr.join(""));
-}
-function isNaN(x) {
-    return x !== x;
- };
- function isInfinity(x) {
-     return x === Infinity;
+function displayInput() {
+    const input = arr.join("");
+    text1.textContent = input;
  }
-
- function checkForNan(result) {
+function checkForNan(result) {
     if (isNaN(result)) {
         disableAllButtons();
         text.textContent = ""
         text1.textContent = "Syntax Error"
         decButton.disabled = true;
+        decimalDisabled = true;
         stopOperations = true;
     }
  }
@@ -156,10 +159,10 @@ function isNaN(x) {
         text.textContent = ""
         text1.textContent = "Undefined"
         decButton.disabled = true;
+        decimalDisabled = true;
         stopOperations = true;
     }
  }
-
 function appendArray(key) {
     if (key == "-") {
        negativeOrPositive(key);
@@ -169,31 +172,6 @@ function appendArray(key) {
     checkDecimalButton();
     displayInput();
 }
-
-function negativeOrPositive(key) {
-    if (arr.includes("-")) {
-        arr.shift();
-        counter-=2;
-    } else {
-        arr.unshift(key);
-    }
-}
-
-function checkDecimalButton() {
-    if (arr.includes(".")) {
-        decButton.disabled = true;
-    } 
-    if (!(arr.includes("."))) {
-        decButton.disabled = false;
-    }
-}
-
-function displayInput() {
-   const input = arr.join("");
-   text1.textContent = input;
-}
-
-
 function count() {
     counter++;
     console.log(counter);
@@ -210,13 +188,48 @@ function preventDigitOverflow(disable,buttons) {
         } 
     }
 
+function negativeOrPositive(key) {
+    if (arr.includes("-")) {
+        arr.shift();
+        counter-=2;
+    } else {
+        arr.unshift(key);
+    }
+}
+
+function checkDecimalButton() {
+    if (arr.includes(".")) {
+        decButton.disabled = true;
+        decimalDisabled = true;
+    } 
+    if (!(arr.includes("."))) {
+        decButton.disabled = false;
+        decimalDisabled = false;
+    }
+}
+function checkOperatorButtons() {
+    if (typeof(arr) !== 'undefined' && arr.length === 0) {
+        disableOperatorButtons();
+    }
+}
 function restoreButtons() {
     deleteButton.disabled = false;
     keyboardDisabled = false;
+    deleteDisabled = false
     enableEqualsButton();
     buttons.forEach((button) => button.disabled = false);
     disable = false;
     checkDecimalButton();
+}
+function enableEqualsButton() {
+    solveButton.disabled = false;
+    isEqualsDisabled = false;
+}
+function enableOperatorButtons() {
+    isOperatorDisabled = false;
+    operationButtons.forEach((button) => {
+        button.disabled = false;
+    })
 }
 
 function disableOperatorButtons() {
@@ -226,21 +239,9 @@ function disableOperatorButtons() {
     })
 }
 
-function enableOperatorButtons() {
-    isOperatorDisabled = false;
-    operationButtons.forEach((button) => {
-        button.disabled = false;
-    })
-}
-
 function disableEqualsButton() {
     solveButton.disabled = true;
     isEqualsDisabled = true;
-}
-
-function enableEqualsButton() {
-    solveButton.disabled = false;
-    isEqualsDisabled = false;
 }
 
 function disableAllButtons() {
@@ -253,12 +254,6 @@ function disableAllButtons() {
         }
     })
 }
-
-function clearScreen() {
-    text1.textContent = "";
-    text.textContent = "";
-}
-
 function deleteInput() {
     counter--;
     checkCounter();
@@ -269,10 +264,9 @@ function deleteInput() {
     if (counter < 0) {counter = 0;}
 }
 
-function checkOperatorButtons() {
-    if (typeof(arr) !== 'undefined' && arr.length === 0) {
-        disableOperatorButtons();
-    }
+function clearScreen() {
+    text1.textContent = "";
+    text.textContent = "";
 }
 
 function operate(num1, num2, operator) {
@@ -312,6 +306,26 @@ function modulo(num1, num2) {
     return num2 % num1;
 }
 
+function checkCounter() {
+    if (counter < maxDigits) {
+        restoreButtons();
+    }
+}
+
+function getDataAttribute(dataKey) {
+    return dataKey;
+}
+function joinNumArray() {
+    return parseFloat(arr.join(""));
+}
+function isNaN(x) {
+    return x !== x;
+ };
+ function isInfinity(x) {
+     return x === Infinity;
+ }
+
+
 function resetVariables() {
     arr = [];
     result = undefined;
@@ -326,8 +340,8 @@ function resetVariables() {
     isEqualsDisabled = false;
     counter = 0;
     stopOperations = false;
-    deleteDisabled = false;
     keyboardDisabled = false;
+    deleteDisabled = false;
     disableOperatorButtons();
 }
 const buttons = document.querySelectorAll(".number-button");
@@ -352,9 +366,10 @@ let isEqualsDisabled = false;
 let stopOperations = false;
 let keyboardDisabled = false;
 let deleteDisabled = false;
+let decimalDisabled = false;
 const maxDigits = 10;
 const numMatcher = /[0-9]/i;
-const operationMatcher = /[\+-/*]/i;
+const operationMatcher = /[\+-/*]/;
 const functionKeysMatcher  = /[F]/;
 numberButtonListener(buttons);
 operationButtonListener(operationButtons);
