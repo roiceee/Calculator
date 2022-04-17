@@ -1,13 +1,15 @@
 function numberButtonListener(buttons) {
     buttons.forEach((button) => {
         button.addEventListener('click', (e) => {
-            if (isEqualsDisabled) {
-                enableEqualsButton();
+            if (!(e.target.id == decId) && !(e.target.id == negId)) {
+                if (isEqualsDisabled) {
+                    enableEqualsButton();
+                }
+                if (isOperatorDisabled) {
+                    enableOperatorButtons();
+                }
             }
             disableButtons(disable,buttons);
-            if (isOperatorDisabled) {
-                enableOperatorButtons();
-            }
             const key = getDataAttribute(button);
             appendArray(key);
         })
@@ -267,6 +269,7 @@ function resetVariables() {
 const buttons = document.querySelectorAll(".number-button");
 const operationButtons = document.querySelectorAll(".smaller-button.operation-button")
 const deleteButton = document.querySelector("#delete-button");
+const negativeButton = document.querySelector("#negative-button");
 const decButton = document.querySelector("#decimal-button");
 const solveButton = document.querySelector(".biggest-button");
 const clearButton = document.querySelector("#clear-button");
@@ -293,6 +296,8 @@ solveButton.addEventListener('click', () => {
         result = operate(number1, number2, previousOperator);
         checkForNan(result);
         checkForInfinity(result);
+        arr = [];
+        checkDecimalButton();
         if (!stopOperations) {
             display(result, operator, "equals");
             resetVariables();
@@ -300,6 +305,6 @@ solveButton.addEventListener('click', () => {
     }
 })
 clearButton.addEventListener('click', () => {clearScreen(); resetVariables();  restoreButtons();})
-    
-
+const decId = decButton.getAttribute("id");
+const negId = negativeButton.getAttribute("id");
 //fix multiply by 0 and divided by 0
