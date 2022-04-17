@@ -1,11 +1,11 @@
 function numberButtonListener(buttons) {
     buttons.forEach((button) => {
         button.addEventListener('click', (e) => {
-            if (isEqualsDisabled == true) {
+            if (isEqualsDisabled) {
                 enableEqualsButton();
             }
             disableButtons(disable,buttons);
-            if (isOperatorDisabled == true) {
+            if (isOperatorDisabled) {
                 enableOperatorButtons();
             }
             const key = getDataAttribute(button);
@@ -262,3 +262,4 @@ solveButton.addEventListener('click', () => {
 clearButton.addEventListener('click', () => {clearScreen(); resetVariables();  restoreButtons();})
     
 
+//fix multiply by 0 and divided by 0
