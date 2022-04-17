@@ -34,7 +34,7 @@ function process(number,operator) {
         number2 = number;
         previousOperator = operator;
         first = false;
-    } else if (!number) {
+    } else if (isNaN(number)) {
         const tempNum = number2;
         display(tempNum, operator);
         previousOperator = operator;
