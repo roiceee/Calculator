@@ -39,10 +39,35 @@ function operationFunctions(e, dataKey) {
         displayInput();
     }      
 }
+
+function solveButtonFunction() {
+    if (!first) { 
+        number = joinNumArray();
+        number1 = number;
+        result = operate(number1, number2, previousOperator);
+        arr = [];
+        checkDecimalButton();
+        restoreButtons();
+        checkForNan(result);
+        checkForInfinity(result);
+        if (!stopOperations) {
+            display(result, operator, "equals");
+            resetVariables();
+        }
+    }
+}
 document.addEventListener('keydown', (e) => {
     console.log(e.key);
     if (functionKeysMatcher.test(e.key)) {
         return;
+    }
+    if ("Escape" == e.key) {
+        clearScreen(); resetVariables();  restoreButtons();
+    }
+    if (!isEqualsDisabled) {
+        if ("Enter" == e.key) {
+            solveButtonFunction();
+        }
     }
     if (!keyboardDisabled) {
         if (numMatcher.test(e.key)) {
@@ -335,20 +360,5 @@ numberButtonListener(buttons);
 operationButtonListener(operationButtons);
 disableOperatorButtons();
 deleteButton.addEventListener('click', () => deleteInput());
-solveButton.addEventListener('click', () => {
-    if (!first) { 
-        number = joinNumArray();
-        number1 = number;
-        result = operate(number1, number2, previousOperator);
-        arr = [];
-        checkDecimalButton();
-        restoreButtons();
-        checkForNan(result);
-        checkForInfinity(result);
-        if (!stopOperations) {
-            display(result, operator, "equals");
-            resetVariables();
-        }
-    }
-})
+solveButton.addEventListener('click', () => solveButtonFunction());
 clearButton.addEventListener('click', () => {clearScreen(); resetVariables();  restoreButtons();})
