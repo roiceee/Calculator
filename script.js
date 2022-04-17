@@ -22,6 +22,8 @@ function operationButtonListener(operationButtons) {
             number = joinNumArray(); //convert array to number
             process(number, operator);
             arr = [];
+            checkDecimalButton();
+            displayInput();
         })
     })
 }
