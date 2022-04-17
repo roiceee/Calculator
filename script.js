@@ -3,40 +3,15 @@ function numberButtonListener(buttons) {
         button.addEventListener('click', (e) => buttonFunctions(e, button.getAttribute("data-key")));
     })
 }
-
-document.addEventListener('keydown', (e) => {
-    if (keyboardDisabled) {
-        return;
-    }
-    if (numMatcher.test(e.key)) {
-        buttonFunctions(e, e.key);
-}});
-    
-
 function operationButtonListener(operationButtons) {
     operationButtons.forEach((button) => {
         button.addEventListener('click', (e) => {
-            counter = 0;
-            checkCounter();
-            disableEqualsButton();
-            operator = getDataAttribute(button.getAttribute("data-key"));
-            number = joinNumArray(); 
-            process(number, operator);
-            if (!stopOperations) {
-                arr = [];
-                checkDecimalButton();
-                displayInput();
-            }      
+            operationFunctions(e, button.getAttribute("data-key"));
         })
     })
 }
-function checkCounter() {
-    if (counter < maxDigits) {
-        restoreButtons();
-    }
-}
 function buttonFunctions(e, dataKey) {
-    console.log(e.keyCode);
+    console.log(e.key);
     if (!(e.target.id == decId) && !(e.target.id == negId)) {
         if (isEqualsDisabled) {
             enableEqualsButton();
@@ -46,10 +21,43 @@ function buttonFunctions(e, dataKey) {
         }
     }
     count();
-    preventDigitOverflow(disable, buttons, dataKey);
+    preventDigitOverflow(disable, buttons);
     const key = getDataAttribute(dataKey);
     appendArray(key);
+}
+function operationFunctions(e, dataKey) {
+    console.log(e.key)
+    counter = 0;
+    checkCounter();
+    disableEqualsButton();
+    operator = getDataAttribute(dataKey);
+    number = joinNumArray(); 
+    process(number, operator);
+    if (!stopOperations) {
+        arr = [];
+        checkDecimalButton();
+        displayInput();
+    }      
+}
+document.addEventListener('keydown', (e) => {
+    console.log(e.key);
+    if (!keyboardDisabled) {
+        if (numMatcher.test(e.key)) {
+            buttonFunctions(e, e.key);
+        }
+    }
+    if (!isOperatorDisabled) {
+        if (operationMatcher.test(e.key)) {
+            operationFunctions(e, e.key);
+        }
+    }
    
+});
+
+function checkCounter() {
+    if (counter < maxDigits) {
+        restoreButtons();
+    }
 }
 
 function getDataAttribute(dataKey) {
@@ -302,7 +310,8 @@ isEqualsDisabled = false;
 let stopOperations = false;
 let keyboardDisabled = false;
 const maxDigits = 10;
-const numMatcher = /[0123456789]/i;
+const numMatcher = /[0-9]/i;
+const operationMatcher = /[\+-/*]/i;
 numberButtonListener(buttons);
 operationButtonListener(operationButtons);
 disableOperatorButtons();
