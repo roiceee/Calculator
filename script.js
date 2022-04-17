@@ -41,6 +41,9 @@ function operationFunctions(e, dataKey) {
 }
 document.addEventListener('keydown', (e) => {
     console.log(e.key);
+    if (functionKeysMatcher.test(e.key)) {
+        return;
+    }
     if (!keyboardDisabled) {
         if (numMatcher.test(e.key)) {
             buttonFunctions(e, e.key);
@@ -56,7 +59,6 @@ document.addEventListener('keydown', (e) => {
             deleteInput();
         }
     }
-   
 });
 
 function checkCounter() {
@@ -328,6 +330,7 @@ let deleteDisabled = false;
 const maxDigits = 10;
 const numMatcher = /[0-9]/i;
 const operationMatcher = /[\+-/*]/i;
+const functionKeysMatcher  = /[F]/;
 numberButtonListener(buttons);
 operationButtonListener(operationButtons);
 disableOperatorButtons();
