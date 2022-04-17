@@ -1,6 +1,7 @@
 function numberButtonListener(buttons) {
     buttons.forEach((button) => {
         button.addEventListener('click', (e) => {
+            solveButton.disabled = false;
             disableButtons(disable,buttons);
             const key = getDataAttribute(button);
             appendArray(key);
@@ -11,6 +12,7 @@ function operationButtonListener(operationButtons) {
     operationButtons.forEach((button) => {
         button.addEventListener('click', (e) => {
             counter = 0;
+            disableEqualsButton();
             operator = getDataAttribute(button);
             number = joinNumArray(); //convert array to number
             process(number, operator);
@@ -104,6 +106,14 @@ function disableButtons(disable,buttons) {
         buttons.forEach((button) => button.disabled = true);
         } 
     }
+
+function disableEqualsButton() {
+    solveButton.disabled = "true";
+}
+
+function enableEqualsButton() {
+    solveButton.disabled = "false";
+}
 
 function deleteInput() {
     counter--;
@@ -215,5 +225,5 @@ clearButton.addEventListener('click', () => {clearScreen(); resetVariables();  r
 
 
 
-//join the array to become a number
-//when the operator is pressed, the calculator displays the partial result 
+//issues
+//
