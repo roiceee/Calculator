@@ -80,7 +80,7 @@ function isNaN(x) {
     if (isNaN(result)) {
         disableAllButtons();
         text.textContent = ""
-        text1.textContent = "Syntax Error!"
+        text1.textContent = "Syntax Error"
         stopOperations = true;
     }
  }
@@ -89,7 +89,7 @@ function isNaN(x) {
     if (isInfinity(result)) {
         disableAllButtons();
         text.textContent = ""
-        text1.textContent = "Infinity Bruh"
+        text1.textContent = "Undefined"
         stopOperations = true;
     }
  }
