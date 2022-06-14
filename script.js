@@ -1,7 +1,8 @@
 function numberButtonListener(buttons) {
   buttons.forEach((button) => {
-    button.addEventListener("click", (e) =>
-      buttonFunctions(e, button.getAttribute("data-key"))
+    button.addEventListener("click", (e) => {
+      buttonFunctions(e, button.getAttribute("data-key"));
+    }
     );
   });
 }
@@ -9,6 +10,7 @@ function numberButtonListener(buttons) {
 function operationButtonListener(operationButtons) {
   operationButtons.forEach((button) => {
     button.addEventListener("click", (e) => {
+      sound.play();
       operationFunctions(e, button.getAttribute("data-key"));
     });
   });
@@ -378,6 +380,7 @@ const text = document.querySelector(".partial-result");
 const text1 = document.querySelector(".input");
 const decId = decButton.getAttribute("id");
 const negId = negativeButton.getAttribute("id");
+const sound = new Audio("resources//sound.mp3");
 let arr = [];
 let counter = 0;
 let disable = false;
